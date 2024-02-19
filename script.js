@@ -1,4 +1,5 @@
 let currentsong = new Audio();
+let songs;
 
 function secondsToMinutesSeconds(seconds) {
     if (isNaN(seconds) || seconds < 0) {
@@ -32,7 +33,6 @@ async function getsongs() {
 }
 
 const playMusic = (track, pause = false) => {
-    // let audio = new Audio("/Spotify clone sigma/songs/" + track);
     currentsong.src = "/Spotify clone sigma/songs/" + track;
     if (!pause) {
         currentsong.play();
@@ -40,12 +40,11 @@ const playMusic = (track, pause = false) => {
     }
     document.querySelector(".songinfo").innerHTML = decodeURI(track);
     document.querySelector(".songtime").innerHTML = "00:00 / 00:00";
-
 }
 
 async function main() {
 
-    let songs = await getsongs();
+    songs = await getsongs();
     playMusic(songs[0], true);
 
     let songul = document.querySelector(".songlist").getElementsByTagName("ul")[0];
@@ -66,7 +65,6 @@ async function main() {
 
     Array.from(document.querySelector(".songlist ").getElementsByTagName("li")).forEach(e => {
         e.addEventListener("click", element => {
-            console.log(e.querySelector(".info").firstElementChild.innerHTML.trim());
             playMusic(e.querySelector(".info").firstElementChild.innerHTML.trim());
         })
     })
@@ -83,7 +81,6 @@ async function main() {
     })
 
     currentsong.addEventListener("timeupdate", () => {
-        console.log(currentsong.currentTime, currentsong.duration);
         document.querySelector(".songtime").innerHTML = `${secondsToMinutesSeconds(currentsong.currentTime)}/${secondsToMinutesSeconds(currentsong.duration)}`;
         document.querySelector(".circle").style.left = (currentsong.currentTime / currentsong.duration) * 100 + "%";
     })
@@ -93,18 +90,75 @@ async function main() {
     })
 
     document.querySelector(".seekbar").addEventListener("click", e => {
-        let percent = (e.offsetX/e.target.getBoundingClientRect().width) * 100;
+        let percent = (e.offsetX / e.target.getBoundingClientRect().width) * 100;
         document.querySelector(".circle").style.left = percent + "%";
         currentsong.currentTime = (percent * currentsong.duration) / 100;
     });
 
-    document.querySelector(".hamburger").addEventListener("click", ()=> {
+    document.querySelector(".hamburger").addEventListener("click", () => {
         document.querySelector(".left").style.left = 0;
     })
 
-    document.getElementById("closehamburger").addEventListener("click", ()=> {
+    document.getElementById("closehamburger").addEventListener("click", () => {
         document.querySelector(".left").style.left = "-" + 110 + "%";
     })
+
+    previoussong.addEventListener("click", () => {
+        currentsong.pause();
+        // console.log("Previous click");
+
+        let index = songs.indexOf(currentsong.src.split("/").slice(-1)[0]);
+
+        if (index - 1 >= 0) {
+            playMusic(songs[index - 1]);
+        }
+    })
+
+    nextsong.addEventListener("click", () => {
+        currentsong.pause();
+        // console.log("Next click");
+
+        let index = songs.indexOf(currentsong.src.split("/").slice(-1)[0]);
+
+        if ((index + 1) < songs.length) {
+            playMusic(songs[index + 1]);
+        }
+    })
+
+    const volumeInput = document.querySelector(".volume-container").getElementsByTagName("input")[0];
+    const volumeIcon = document.querySelector("#volume");
+    var previousvolume;
+
+    const updateVolumeIcon = (volumeValue) => {
+        if (volumeValue == 0) {
+            volumeIcon.src = "images/zero-volume.svg";
+        } else if (volumeValue > 0 && volumeValue < 70) {
+            volumeIcon.src = "images/low-volume.svg";
+        } else {
+            volumeIcon.src = "images/high-volume.svg";
+        }
+    };
+
+    const handleVolumeChange = (e) => {
+        currentsong.volume = e.target.value / 100;
+        updateVolumeIcon(e.target.value);
+    };
+
+    const handleVolumeIconClick = () => {
+        if (currentsong.volume == 0) {
+            currentsong.volume = (previousvolume);
+            volumeInput.value = previousvolume * 100;
+        } else {
+            previousvolume = currentsong.volume;
+            currentsong.volume = 0;
+            volumeInput.value = 0;
+        }
+
+        updateVolumeIcon(currentsong.volume * 100);
+    };
+
+    volumeInput.addEventListener("change", handleVolumeChange);
+    volumeIcon.addEventListener("click", handleVolumeIconClick);
 }
 
 main()

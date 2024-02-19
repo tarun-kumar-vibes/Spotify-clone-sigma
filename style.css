@@ -29,21 +29,22 @@ body {
 }
 
 .logo {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
 }
 
 .logo img {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 
-.logo img:last-child {
-  margin-left: 20px;
-  width: 30px;
-  height: 30px;
+.logo #closehamburger {
+    display: none;
+    margin-left: 20px;
+    width: 30px;
+    height: 30px;
 }
 
 .home ul li {
@@ -272,6 +273,10 @@ body {
     font-size: 13px;
 }
 
+.info div {
+    word-break: break-all;
+}
+
 .songcardlib {
     margin-top: 6px;
 }
@@ -350,6 +355,11 @@ body {
     z-index: 10;
 }
 
+.songbuttons img:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+}
+
 .songbuttons img {
     width: 35px;
     height: auto;
@@ -357,10 +367,32 @@ body {
     cursor: pointer;
 }
 
+.volume-container {
+    position: relative;
+}
+
+#volumeSlider {
+    display: none;
+    position: absolute;
+    top: -170%;
+    left: 45%;
+    transform: translate(-50%, -50%) rotate(-90deg); /* Rotate and center vertically */
+    z-index: 100;
+}
+
+#volume:hover + #volumeSlider,
+#volumeSlider:hover {
+    display: block;
+}
+
+#volumeSlider:focus {
+    outline: none; /* Remove focus outline if desired */
+}
+
 .songtime {
     font-size: 15px;
     position: absolute;
-    right: 10px;
+    right: 0;
     top: 10px;
     white-space: nowrap;
 }
@@ -399,12 +431,66 @@ body {
     }
 
     .cardcontainer {
+        justify-content:center;
+    }
+
+    .spotifyplaylist h1 {
+        margin: 0 6%;
+    }
+
+    .logo #closehamburger {
+        display: block;
+    }
+}
+
+@media (min-width: 300px) and (max-width: 400px) {
+    .left {
+        width: 90%;
+        height: auto;
+    }
+
+    .songinfo {
+        font-size: 10px;
+        left: -10px;
+    }
+
+    .songtime {
+        font-size: 10px;
+        right: -10px;
+    }
+
+    .songbuttons img {
+        width: 17px;
+        margin: 7px 3px;
+    }
+
+    .footer {
+        display: none;
+    }
+    .cardcontainer {
         justify-content: center;
     }
 }
 
-@media (min-height: 300px) and (max-width: 799px) {
+@media (min-width: 401px) and (max-width: 700px) {
     .left {
-        width: 95%;
+        width: 90%;
+        height: auto;
+    }
+
+    .songinfo {
+        left: -15px;
+    }
+
+    .songbuttons img {
+        width: 20px;
+        margin: 7px 4px;
+    }
+
+    .footer {
+        display: none;
+    }
+    .cardcontainer {
+        justify-content: center;
     }
 }
