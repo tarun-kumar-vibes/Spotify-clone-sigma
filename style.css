@@ -183,12 +183,16 @@ body {
     gap: 10px;
     flex-wrap: wrap;
     margin: 30px;
-    max-height: 70vh;
+    max-height: 68vh;
     overflow-y: auto;
 }
 
 .card {
-    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 16%;
+    height: 40vh;
     padding: 10px;
     border-radius: 5px;
     background-color: #252525;
@@ -201,7 +205,12 @@ body {
 
 .card img {
     width: 100%;
-    object-fit: contain;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card h2, .card p {
+    padding: 10px 25px;
 }
 
 .play {
@@ -223,6 +232,11 @@ body {
 
 .card:hover .play {
     animation: slideIn 1s ease-out forwards;
+}
+
+.card:hover {
+    background-color: #353535;
+    cursor: pointer;
 }
 
 @keyframes slideIn {
@@ -371,6 +385,11 @@ body {
     position: relative;
 }
 
+.card .cover-image {
+    width: 200px;
+    height: 200px;
+}
+
 #volumeSlider {
     display: none;
     position: absolute;
@@ -378,6 +397,7 @@ body {
     left: 45%;
     transform: translate(-50%, -50%) rotate(-90deg); /* Rotate and center vertically */
     z-index: 100;
+    cursor: pointer;
 }
 
 #volume:hover + #volumeSlider,
@@ -431,7 +451,12 @@ body {
     }
 
     .cardcontainer {
-        justify-content:center;
+        margin-left: 8%;
+        justify-content:left;
+    }
+
+    .card {
+        width: 46%;
     }
 
     .spotifyplaylist h1 {
@@ -441,9 +466,15 @@ body {
     .logo #closehamburger {
         display: block;
     }
+    #volumeSlider {
+        top: -210%;
+    }
+    .card h2, .card p {
+        font-size: 18px;
+    }
 }
 
-@media (min-width: 300px) and (max-width: 400px) {
+@media (min-width: 300px) and (max-width: 512px) {
     .left {
         width: 90%;
         height: auto;
@@ -467,12 +498,21 @@ body {
     .footer {
         display: none;
     }
+    #volumeSlider {
+        top: -160%;
+    }
+    .card h2, .card p {
+        font-size: 14px;
+    }
     .cardcontainer {
-        justify-content: center;
+        height: 58vh;
+    }
+    .card {
+        width: 64vw;
     }
 }
 
-@media (min-width: 401px) and (max-width: 700px) {
+@media (min-width: 513px) and (max-width: 769px) {
     .left {
         width: 90%;
         height: auto;
@@ -486,11 +526,85 @@ body {
         width: 20px;
         margin: 7px 4px;
     }
+    
+    .card {
+        width: 44%;
+    }
+
+    .cardcontainer {
+        justify-content: center;
+        height: 62vh;
+    }
 
     .footer {
         display: none;
     }
+    #volumeSlider {
+        top: -160%;
+    }
+}
+
+@media (min-width: 250px) and (max-width: 565px) {
     .cardcontainer {
         justify-content: center;
+    }
+}
+
+@media (min-width: 770px) and (max-width: 1200px) {
+    .card {
+        width: 28%;
+        height: 42vh;
+    }
+
+    .cardcontainer {
+        height: 62vh;
+    }
+
+    .card p {
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 1201px) and (max-width: 1400px) {
+    .card {
+        width: 22%;
+    }
+
+    .cardcontainer {
+        height: 62vh;
+    }
+
+    .card p {
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 1401px) and (max-width: 1600px) {
+    .card {
+        width: 30%;
+        height: 43vh;
+    }
+
+    .cardcontainer {
+        height: 62vh;
+    }
+
+    .card p {
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 1601px) {
+    .card {
+        width: 22%;
+        height: 43vh;
+    }
+
+    .cardcontainer {
+        height: 62vh;
+    }
+
+    .card p {
+        font-size: 20px;
     }
 }

@@ -1,5 +1,6 @@
 let currentsong = new Audio();
 let songs;
+let currfolder;
 
 function secondsToMinutesSeconds(seconds) {
     if (isNaN(seconds) || seconds < 0) {
@@ -15,39 +16,24 @@ function secondsToMinutesSeconds(seconds) {
     return `${formattedMinutes}:${formattedSeconds}`;
 }
 
-async function getsongs() {
-    let a = await fetch("http://127.0.0.1:3000/spotify%20clone%20sigma/songs/");
+async function getsongs(folder) {
+    currfolder = folder;
+    let a = await fetch(`http://127.0.0.1:3000/spotify%20clone%20sigma/${currfolder}/`);
     let response = await a.text();
     let div = document.createElement("div");
     div.innerHTML = response;
     let as = div.getElementsByTagName("a");
-    let songs = [];
+    songs = [];
 
     for (let index = 0; index < as.length; index++) {
         const element = as[index];
         if (element.href.endsWith(".mp3")) {
-            songs.push(element.href.split("/songs/")[1]);
+            songs.push(element.href.split(`/${folder}/`)[1]);
         }
     }
-    return songs
-}
-
-const playMusic = (track, pause = false) => {
-    currentsong.src = "/Spotify clone sigma/songs/" + track;
-    if (!pause) {
-        currentsong.play();
-        playsong.src = "images/pause.svg";
-    }
-    document.querySelector(".songinfo").innerHTML = decodeURI(track);
-    document.querySelector(".songtime").innerHTML = "00:00 / 00:00";
-}
-
-async function main() {
-
-    songs = await getsongs();
-    playMusic(songs[0], true);
 
     let songul = document.querySelector(".songlist").getElementsByTagName("ul")[0];
+    songul.innerHTML = "";
     for (const song of songs) {
         songul.innerHTML += `<li>
         <div class="songcardlib">
@@ -68,7 +54,70 @@ async function main() {
             playMusic(e.querySelector(".info").firstElementChild.innerHTML.trim());
         })
     })
+}
 
+const playMusic = (track, pause = false) => {
+    currentsong.src = `/Spotify clone sigma/${currfolder}/` + track;
+    if (!pause) {
+        currentsong.play();
+        playsong.src = "images/pause.svg";
+    }
+    document.querySelector(".songinfo").innerHTML = decodeURI(track);
+    document.querySelector(".songtime").innerHTML = "00:00 / 00:00";
+}
+
+async function displayalbums() {
+    let a = await fetch(`http://127.0.0.1:3000/spotify%20clone%20sigma/songs/`);
+    let response = await a.text();
+    let div = document.createElement("div");
+    div.innerHTML = response;
+    let anchors = div.getElementsByTagName("a");
+    let array = Array.from(anchors);
+    for (let index = 0; index < array.length; index++) {
+        const e = array[index];
+
+        if (e.href.includes("/songs")) {
+            let folder = e.href.split("/").slice(-2)[0];
+            // get the metadata of the folder
+            let a = await fetch(`http://127.0.0.1:3000/spotify%20clone%20sigma/songs/${folder}/info.json`);
+            let response = await a.json();
+
+            let cardcontainer = document.querySelector(".cardcontainer");
+            cardcontainer.innerHTML +=  `
+            <div data-folder="${folder}" class="card">
+                        <div class="play">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24"
+                                fill="none">
+                                <path
+                                    d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"
+                                    fill="black"></path>
+                            </svg>
+                        </div>
+                        <div class="cover-image">
+                            <img src="${response.image}" alt="">
+                        </div>
+                        <h2>${response.title}</h2>
+                        <p>${response.description}</p>
+                    </div>
+                    `;
+        }
+    }
+
+        Array.from(document.getElementsByClassName("card")).forEach(e=> {
+            e.addEventListener("click", async item=> {
+                await getsongs(`songs/${item.currentTarget.dataset.folder}`);
+                playMusic(songs[0], true);
+            })
+        })
+}
+
+async function main() {
+
+    await getsongs(`songs/bollywood`);
+    playMusic(songs[0], true);
+
+    //display all the albums on the page
+    displayalbums();
 
     playsong.addEventListener("click", () => {
         if (currentsong.paused) {
